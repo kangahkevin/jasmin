@@ -1,0 +1,2 @@
+*/2 * * * * root supervisorctl -u $SUPERVISOR_USERNAME -p $SUPERVISOR_PASSWORD restart dlrlookupd
+*/2 * * * * root supervisorctl -u $SUPERVISOR_USERNAME -p $SUPERVISOR_PASSWORD restart dlrd
