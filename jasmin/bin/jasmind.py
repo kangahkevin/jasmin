@@ -6,6 +6,7 @@ import sys
 import traceback
 import logging
 
+from logging.handlers import TimedRotatingFileHandler
 from lockfile import FileLock, LockTimeout, AlreadyLocked
 from twisted.cred import portal
 from twisted.cred.checkers import AllowAnonymousAccess, InMemoryUsernamePasswordDatabaseDontUse
@@ -37,7 +38,7 @@ from jasmin.tools.cred.checkers import RouterAuthChecker
 from jasmin.tools.cred.portal import JasminPBRealm
 from jasmin.tools.cred.portal import SmppsRealm
 from jasmin.tools.spread.pb import JasminPBPortalRoot
-from jasmin.config import ROOT_PATH
+from jasmin.config import ROOT_PATH, LOG_PATH
 from jasmin.bin import BaseDaemon
 
 CONFIG_PATH = os.getenv('CONFIG_PATH', '%s/etc/jasmin/' % ROOT_PATH)
@@ -70,9 +71,12 @@ class JasminDaemon(BaseDaemon):
     def __init__(self, opt):
         super().__init__(opt)
 
+        log_file = '%s/jasmin.log' % LOG_PATH
+        log_rotate = 'W6'
+
         self.log = logging.getLogger(LOG_CATEGORY)
         self.log.setLevel(logging.INFO)
-        handler = logging.StreamHandler(sys.stdout)
+        handler = TimedRotatingFileHandler(filename=log_file, when=log_rotate)
         formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(process)d %(message)s', '%Y-%m-%d %H:%M:%S')
         handler.setFormatter(formatter)
         self.log.addHandler(handler)
